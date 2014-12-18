@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 import webapp2
-import ng
+import cgi
 
 form = """
     <form method="post" action="/textHandler">
@@ -39,12 +39,17 @@ class TextHandler(webapp2.RequestHandler):
 def rot13(text):
     s = ""
     list = []
+    indexIntoTable = 65
+    lettersInAlphabet = 26
     for c in text:
         x = ord(c)
-        x = x + 13
-        list.append(unichr(x))
+        if x > 64 and x < 91:
+            x = indexIntoTable + (x + lettersInAlphabet/2 + indexIntoTable) % lettersInAlphabet
+        elif x > 96 and x < 123:
+            x = (indexIntoTable + 32 + 1) + (x + indexIntoTable + 32) % lettersInAlphabet
+        list.append(chr(x))
     #for stuff in list:
-    #    s = s + unichr(stuff)
+    #    s = (s + chr(stuff) + 256) % 256
     for x in list:
         s += x
     return s
